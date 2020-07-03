@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <title>Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+<div class="p-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
+                aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor03">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Dashboard <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <br>
+    <h4>Log Entry Lines</h4>
+    <br>
+    <table class="table table-sm table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">IP</th>
+            <th scope="col">DATE</th>
+            <th scope="col">METHOD</th>
+            <th scope="col">REQUEST PATH</th>
+            <th scope="col">HTTP VERSION</th>
+            <th scope="col">STATUS CODE</th>
+            <th scope="col">RESPONSE SIZE</th>
+            <th scope="col">REFERRER</th>
+            <th scope="col">USER AGENT</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for line in data %}
+        <tr>
+            <td scope="row">{{ data|line_index:line }}</td>
+            <td>{{ line.ip }}</td>
+            <td>{{ line.date }}</td>
+            <td>{{ line.method }}</td>
+            <td>{{ line.request_path }}</td>
+            <td>{{ line.http_version }}</td>
+            <td>{{ line.status_code }}</td>
+            <td>{{ line.response_size }}</td>
+            <td>{{ line.referrer }}</td>
+            <td>{{ line.user_agent }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h4>Statistics</h4>
+    <br>
+    <table class="table table-sm table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name of statistics</th>
+            <th scope="col">Value of statistics</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="text-center align-middle" scope="row">1</td>
+            <td class="text-center align-middle">TOP 10 MOST FREQUENT IP</td>
+            <td>
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">IP</th>
+                        <th scope="col">Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for line in ip_count %}
+                    <tr>
+                        <td style="width: 30%">{{ forloop.counter }}</td>
+                        <td>{{ line.ip }}</td>
+                        <td style="width: 30%">{{ line.name_count }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center align-middle" scope="row">2</td>
+            <td class="text-center align-middle">NUMBER OF METHODS REQUESTS</td>
+            <td>
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Method</th>
+                        <th scope="col">Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for line in method_count %}
+                    <tr>
+
+                        <td style="width: 30%">{{ forloop.counter }}</td>
+                        <td>{{ line.method }}</td>
+                        <td style="width: 30%">{{ line.name_count }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center align-middle" scope="row">3</td>
+            <td class="text-center align-middle">CURRENT SELECTED RESPONSE SIZE</td>
+            <td class="text-center align-middle">{{ response_size }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    {% if data.has_other_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if data.has_previous %}
+            <li><a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">First</a>
+            </li>
+            <li><a class="page-link"
+                   href="?page={{ data.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+            </li>
+            {% endif %}
+            {% for i in data.paginator.page_range %}
+            {% if data.number == i %}
+            <li class="page-item active"><a class="page-link">{{ i }} <span class="sr-only">(current)</span></a>
+            </li>
+            {% elif i <= data.number|add:10 and i >= data.number|add:-10 %}
+            <li><a class="page-link"
+                   href="?page={{forloop.counter}}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{forloop.counter}}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if data.has_next %}
+            <li><a class="page-link"
+                   href="?page={{ data.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+            </li>
+            <li><a class="page-link"
+                   href="?page={{ data.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Last</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+</body>
+</html>

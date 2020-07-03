@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
                                 LogEntry(ip=data['ip'],
                                          date=data['date'],
-                                         method=data['method'],
+                                         method=data['method'].upper(),
                                          request_path=data['request_path'],
                                          http_version=data['http_version'],
                                          status_code=data['status_code'],
@@ -47,7 +47,7 @@ class Command(BaseCommand):
                                 not_ended_line = None  # Должна быть всегда None, если регулярка успешно совпала
 
                             except AttributeError:  # В случае несовпадения регулярки, строку переносим на другой цикл
-                                if line:
+                                if line and not not_ended_line:
                                     not_ended_line = line
                             # except Exception as err:
                             #     print_err = f'ERR: {err}|nLINE: {line}'

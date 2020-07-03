@@ -12,3 +12,6 @@ class LogEntry(models.Model):
     response_size = models.PositiveIntegerField(default=0)
     referrer = models.CharField(max_length=1000)
     user_agent = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.id
