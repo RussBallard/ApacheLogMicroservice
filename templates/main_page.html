@@ -22,9 +22,16 @@
                     <a class="nav-link" href="/">Dashboard <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
-            <form class="form-inline">
+            <form class="form-inline mr-sm-2">
                 <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <form action="" method="post">{% csrf_token %}
+                {% if data %}
+                <button type="submit" class="btn btn-primary float-right  active">Export to XLSX</button>
+                {% else %}
+                <button type="submit" class="btn btn-primary float-right" disabled="disabled">Export to XLSX</button>
+                {% endif %}
             </form>
         </div>
     </nav>
@@ -77,7 +84,7 @@
         <tbody>
         <tr>
             <td class="text-center align-middle" scope="row">1</td>
-            <td class="text-center align-middle">TOP 10 MOST FREQUENT IP</td>
+            <td class="text-left align-middle">TOP 10 MOST FREQUENT IP</td>
             <td>
                 <table class="table table-sm">
                     <thead>
@@ -101,7 +108,7 @@
         </tr>
         <tr>
             <td class="text-center align-middle" scope="row">2</td>
-            <td class="text-center align-middle">NUMBER OF METHODS REQUESTS</td>
+            <td class="text-left align-middle">NUMBER OF METHODS REQUESTS</td>
             <td>
                 <table class="table table-sm">
                     <thead>
@@ -114,7 +121,6 @@
                     <tbody>
                     {% for line in method_count %}
                     <tr>
-
                         <td style="width: 30%">{{ forloop.counter }}</td>
                         <td>{{ line.method }}</td>
                         <td style="width: 30%">{{ line.name_count }}</td>
@@ -126,7 +132,7 @@
         </tr>
         <tr>
             <td class="text-center align-middle" scope="row">3</td>
-            <td class="text-center align-middle">CURRENT SELECTED RESPONSE SIZE</td>
+            <td class="text-left align-middle">CURRENT SELECTED RESPONSE SIZE</td>
             <td class="text-center align-middle">{{ response_size }}</td>
         </tr>
         </tbody>
