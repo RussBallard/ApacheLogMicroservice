@@ -13,11 +13,11 @@ from logs_dashboard.models import LogEntry
 @csrf_exempt
 def main_dashboard(request):
     query = request.GET.get('q', '')
-    data = LogEntry.objects.all() if not query \
+    data = LogEntry.objects.all().order_by('id') if not query \
         else LogEntry.objects.filter(Q(ip__icontains=query) | Q(date__icontains=query) |
                                      Q(method__icontains=query) | Q(status_code__icontains=query) |
                                      Q(user_agent__icontains=query) | Q(referrer__icontains=query) |
-                                     Q(request_path__icontains=query))
+                                     Q(request_path__icontains=query)).order_by('id')
 
     if request.method == 'POST':
         response = excel_export(data)
