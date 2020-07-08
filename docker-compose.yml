@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:12.3-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_pwd
+      POSTGRES_DB: test_db
+    ports:
+      - 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+
+  django:
+    build: .
+    environment:
+      DB_ENGINE: django.db.backends.postgresql
+      DB_USER: test_user
+      DB_PASSWORD: test_pwd
+      DB_NAME: test_db
+      DB_HOST: db
+      DB_PORT: 5432
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+    command: bash -c "python manage.py migrate | python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+
+volumes:
+  postgres_data:

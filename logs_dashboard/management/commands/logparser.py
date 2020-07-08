@@ -10,9 +10,10 @@ from logs_dashboard.models import LogEntry
 
 class Command(BaseCommand):
     help = 'the custom command allows to download the log file and insert data into the database'
-    LOG_REGEX = re.compile(r'(?P<ip>.*) - - \[(?P<date>.*)\] "(?P<method>\w*) (?P<request_path>.*) '
-                           r'HTTP\/(?P<http_version>.*)" (?P<status_code>\d+) (?P<response_size>\d+) '
-                           r'"(?P<referrer>.*)" "(?P<user_agent>.*)" "-"')
+    LOG_REGEX = re.compile(
+        os.getenv('LOG_REGEX', r'(?P<ip>.*) - - \[(?P<date>.*)\] "(?P<method>\w*) (?P<request_path>.*) '
+                               r'HTTP\/(?P<http_version>.*)" (?P<status_code>\d+) (?P<response_size>\d+) '
+                               r'"(?P<referrer>.*)" "(?P<user_agent>.*)" "-"'))
 
     def add_arguments(self, parser):
         parser.add_argument('log_url', type=str, action='store', help='url to the log file')
