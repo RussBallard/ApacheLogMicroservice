@@ -12,7 +12,7 @@ from logs_dashboard.models import LogEntry
 
 @csrf_exempt
 def main_dashboard(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('q')
     data = LogEntry.objects.all().order_by('id') if not query \
         else LogEntry.objects.filter(Q(ip__icontains=query) | Q(date__icontains=query) |
                                      Q(method__icontains=query) | Q(status_code__icontains=query) |
@@ -24,7 +24,7 @@ def main_dashboard(request):
         return response
 
     elif request.method == 'GET':
-        page = request.GET.get('page')
+        page = request.GET.get('page', 1)
         context = main_page_data(page, data)
         return render(request, 'main_page.html', context)
 
