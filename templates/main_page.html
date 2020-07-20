@@ -122,7 +122,7 @@
                     {% for line in method_count %}
                     <tr>
                         <td style="width: 30%">{{ forloop.counter }}</td>
-                        <td>{{ line.method }}</td>
+                        <td style="word-break: break-all">{{ line.method }}</td>
                         <td style="width: 30%">{{ line.name_count }}</td>
                     </tr>
                     {% endfor %}
